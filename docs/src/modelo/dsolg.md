@@ -87,8 +87,8 @@ Dada esta estructura, la productividad laboral del hogar es
 
 ```math
 h_j=\begin{cases}
-  e_j \exp{\big[\theta+\eta_j\big]} & \text{si ``j<j_r``}\\
-  0 & \text{si ``j \geq j_r``}.
+  e_j \exp{\big[\theta+\eta_j\big]} & \text{si }j<j_r\\
+  0 & \text{si } j \geq j_r.
 \end{cases}
 ```
 
@@ -96,8 +96,8 @@ A la edad obligatoria de retiro ``j_r``, la productividad laboral cae a cero y l
 
 ```math
 pen_j=\begin{cases}
-  0  & \text{si ``j<j_r``}\\
-  \kappa_t \dfrac{w_t}{j_r-1} \sum_{j=1}^{j_r-1}e_j, & \text{si ``j \geq j_r``}.
+  0  & \text{si } j<j_r\\
+  \kappa_t \dfrac{w_t}{j_r-1} \sum_{j=1}^{j_r-1}e_j, & \text{si } j \geq j_r.
 \end{cases}
 ```
 
