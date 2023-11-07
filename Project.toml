@@ -1,0 +1,10 @@
+name = "DSOLGLatam"
+uuid = "65213245-45d1-41ef-a70d-f6553d8b0a20"
+authors = ["Hermilo Cortés <hermilocg@hotmail.com>"]
+version = "0.1.0"
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
