@@ -1,6 +1,5 @@
-# [DSOLG](@id dsolg)
-## Modelo
-
+# [Modelo](@id dsolg)
+ 
 El siguiente modelo corresponde al capítulo 11 del libro de [Fehr y Kindermann (2018)](https://global.oup.com/academic/product/introduction-to-computational-economics-using-fortran-9780198804390?q=Economics%20Using%20Fortran&lang=en&cc=mx).
 
 Dicho modelo incorpora a riesgos idiosincráticos en la productividad laboral y decisión endógena de la oferta de laboral de los hogares. El precio de los factores responde a cambios en el comportamiento individual y el gobierno entra como un agente que recolecta ingresos por impuestos para financiar su gasto.
@@ -161,5 +160,167 @@ El problema de los hogares se reduce a resolver la condición de primer orden
 ```math
 \begin{equation}
 \dfrac{\nu\big[ c(a^+)^\nu (1-l(a^+))^{1-\nu} \big]^{1-\frac{1}{\gamma}}}{p_tc(a^+)}=\beta(1+r_{t+1}^n)\times E\Bigg[ \dfrac{\nu \big[ c_{t+1}(z^+)^\nu (1-l_{t+1}(z^+))^{1-\nu} \big]^{1 - \frac{1}{\gamma}}}{p_{t+1}c_{t+1}(z^+)} \Bigg | \eta \Bigg]
+\end{equation}
+```
+
+donde ``a^\texttt{+}`` es desconocido.
+
+## Agregación
+
+Con el objetivo de agregar las decisiones individuales para cada elemento del espacio de estados a las cantidades agregadas de la economía, necesitamos determinar la distribución de los hogares ``\phi_t(z)`` en el espacio de estados. Se asume que, de alguna manera, hemos discretizado el espacio de estados. Podemos aplicar el procedimiento descrito en el capítulo 10 de [Fehr y Kindermann (2018)](https://global.oup.com/academic/product/introduction-to-computational-economics-using-fortran-9780198804390?q=Economics%20Using%20Fortran&lang=en&cc=mx). Sabemos que a la edad ``j=1`` los hogares mantienen cero activos, y que experimentan shock de productividad permanente ``\hat{\theta}_i`` con probabilidad ``\pi_i^\theta``, como también un shock transitorio en la productividad de ``\eta_1=0``. De manera que tenemos:
+
+```math
+\phi_t(1,0,\hat{\theta}_i,\hat{\eta}_g)=\begin{cases}
+  \pi_i^\theta & \text{si } g=\dfrac{m+1}{2} \quad \text{ y } \\
+  0 & \text{en otro caso}.
+\end{cases}
+```
+
+Conociendo la distribución de los hogares sobre el espacio de estados a la edad 1 podemos calcular la distribución de cualquier combinación sucesiva edad-año al utilizar la función de política ``a_t^\texttt{+}(z)``. Específicamente, para cada elemento del espacio de estados ``z`` a la edad ``j`` y tiempo ``t``, podemos calcular los nodos de interpolación izquierdo y derecho, ``\hat{a}_l`` y ``\hat{a}_r``, como también el correspondiente peso de interpolación ``\varphi``. Los nodos y el peso satisfacen
+
+```math
+\begin{equation}
+  a_t^\texttt{+}(z) = \varphi \hat{a}_l + (1-\varphi)\hat{a}_r
+\end{equation}
+```
+
+Tomando en cuenta las probabilidades de transición para el shock de productividad transitorio ``\eta_{gg^{\texttt{+}}}``, se distribuye la masa de individuos en el estado ``z`` al espacio de estados correspondiente a la edad y periodo siguientes ``j+1``  y ``t+1`` de acuerdo a la siguiente expresión:
+
+```math
+\phi_{t+1}(z^\texttt{+})=\begin{cases}
+   \phi_{t+1}(z^\texttt{+}) + \varphi \pi_{gg^\texttt{+}} \phi_{t}(z) & \text{si } \quad \nu = l \\
+  \phi_{t+1}(z^\texttt{+}) + (1-\varphi) \pi_{gg^\texttt{+}} \phi_{t}(z) & \text{si }\quad \nu=r.
+\end{cases}
+```
+
+con ``z^\texttt{+} = (j+1, \hat{a}_\nu, \hat{\theta}_i, \hat{\eta}_{g^{\texttt{+}}})``
+
+La medida de distribución ``\phi_t(z)`` satisface
+
+```math
+\begin{equation}
+  \sum_{\nu=0}^n \sum_{i=1}^2 \sum_{g=1}^m \phi_t(z) = 1
+\end{equation}
+```
+
+para cualquier edad ``j`` al tiempo ``t``. De manera que podemos calcular agregados específicos a cada cohorte
+
+```math
+\begin{equation}
+  \bar{c}_{j,t} = \sum_{\nu=0}^n \sum_{i=1}^2 \sum_{g=1}^m \phi_t(z) c_t(z)
+\end{equation}
+```
+```math
+\begin{equation}
+  \bar{l}_{j,t} = \sum_{\nu=0}^n \sum_{i=1}^2 \sum_{g=1}^m \phi_t(z) h_t(z)l_t(z)
+\end{equation}
+```
+```math
+\begin{equation}
+  \bar{a}_{j,t} = \sum_{\nu=0}^n \sum_{i=1}^2 \sum_{g=1}^m \phi_t(z) \hat{a}_\nu
+\end{equation}
+```
+
+Para cada una de esas agregaciones a nivel de cohorte, podemos calcular las cantidades para el conjunto de la economía. Para esto, tenemos que ponderar las variables de cada cohorte con el respectivo tamaño relativo de cada cohorte ``m_j`` y su probabilidad de supervivencia ``\psi_j``. En consecuencia, tenemos
+
+```math
+\begin{equation}
+  C_t = \sum_{j=1}^J \dfrac{m_{j,t}}{\psi_{j,t}} \bar{c}_{j,t}
+\end{equation}
+```
+
+```math
+\begin{equation}
+  L_t^s = \sum_{j=1}^J \dfrac{m_{j,t}}{\psi_{j,t}} \bar{l}_{j,t}
+\end{equation}
+```
+
+```math
+\begin{equation}
+  A_t = \sum_{j=1}^J \dfrac{m_{j,t}}{\psi_{j,t}} \bar{a}_{j,t}
+\end{equation}
+```
+
+## Empresas
+Las empresas contratan capital ``K_t`` y trabajo ``L_t`` en un mercado de factores perfectamente competitivo para producir un único bien ``Y_t`` de acuerdo a una tecnología de producción dada por una función de producción Cobb-Douglas
+
+```math
+\begin{equation}
+  Y_t = \Omega K_t^\alpha L_t^{1-\alpha}
+\end{equation}
+```
+
+donde ``\Omega`` es el nivel de tecnología que es constante en el tiempo. El capital se deprecia a una tasa ``\delta``, de manera que el stock de capital evoluciona de acuerdo a la siguiente expresión
+
+```math
+\begin{equation}
+  (1+n_p)K_{t+1} = (1-\delta)K_t + I_t
+\end{equation}
+```
+
+Bajo el supuesto de competencia perfecta, las funciones inversas a la demanda de capital y trabajo de la empresa están dadas por
+
+```math
+\begin{equation}
+  r_t = \alpha \Omega \Bigg[ \dfrac{L_t}{K_t}\Bigg]^{(1-\alpha)} - \delta
+\end{equation}
+```
+
+```math
+\begin{equation}
+  w_t = (1-\alpha) \Omega \Bigg[ \dfrac{K_t}{L_t} \Bigg]^\alpha
+\end{equation}
+```
+
+## Gobierno
+El gobierno administra dos sistemas : un sistema de impuestos y un sistema de pensiones, ambos operando en equilibrio presupuestario.
+
+El gobierno recolecta impuestos sobre el el gasto en consumo, ingreso laboral e ingreso de capital con el objetivo de financiar su gasto público ``G_t`` y pagos relacionados al stock de deuda ``B_t``. En el equilibrio inicial, el gasto público es igual a una razón constante del GDP, esto es, ``G = g_y Y``. En periodos posteriores, el nivel de bienes públicos se mantiene constante (per cápita), lo que significa que ``G_t=G``. Lo mismo aplica para la deuda pública, donde la razón inicial es denominada ``b_y``. En cualquier punto en el tiempo el presupuesto del sistema de impuestos es balanceado si se cumple la igualdad
+
+```math
+\begin{equation}
+  \tau_t^c C_t + \tau_t^w w_t L_t^s + \tau_t^r r_t A_t + (1+n_p)B_{t+1}=G_t + (1+r_t)B_t
+\end{equation}
+```
+
+Además de los ingresos por impuestos, el gobierno financia su gasto al contratar nueva deuda ``(1+n_p)B_{t+1}``. Sin embargo, debe repagar la actual deuda incluyendo intereses sobre los pagos de manera que tenemos que agregar  ``(1+r_t)B_t`` al consumo de gobierno en el lado del gasto. De manera que, en un equilibrio de estado estacionario, el gasto ``(r-n_p)B`` refleja el costo necesitado para mantener el nivel de deuda constante. Nótese que no se ha hecho ninguna restricción a priori acerca de que tasa de impuesto tiene que ajustarse con el objetivo de balancear el presupuesto en el tiempo.
+
+El sistema de pensiones opera en un esquema pay-as-you-go, lo que significa que recolecta contribuciones de las generaciones en edad de trabajar y directamente las distribuye a los retirados actuales. La ecuación de balance del presupuesto del sistema de pensiones está dada por
+
+```math
+\begin{equation}
+  \tau_t^p w_t L_t^s = \overline{pen}_t N^R \quad \text{con} \quad N^R = \sum_{j = j_r}^J m_j \psi_j
+\end{equation}
+```
+
+donde ``N^R`` denota la cantidad de retirados. Dado que los pagos son hechos a todos los retirados en una forma *lump-sum*, simplemente se tiene que sumar el tamaño relativo del cohorte de la generación retirada en el lado del gasto y multiplicarlo por esa cantidad con el beneficio respectivo.
+
+Para la evolución de los pagos a pensiones en el tiempo se asume que están vinculados a las ganancias laborales promedio del periodo previo, es decir
+
+```math
+\begin{equation}
+  \overline{pen}_t = \kappa_t \dfrac{w_{t-1}L_{t-1}^s}{N^L} \quad \text{con} \quad N^L = \sum_{j=1}^{j_r-1}m_j\psi_j
+\end{equation}
+```
+
+donde ``\kappa_t`` es la tasa de reemplazo del sistema de pensiones y ``N^L`` es el tamaño (fijo) de los cohortes en edad de trabajar. Se asume que la tasa de reemplazo ``\kappa_t`` está dada de forma exógena mientras que la tasa de contribución ``\tau_t^p`` se ajusta con el objetivo de balancear el presupuesto.
+
+## Mercados
+
+Hay tres mercados en la economía : mercado de capital, mercado de trabajo y el mercado de bienes. Con respecto a los mercados de factores, el precio del capital ``r_t`` y del trabajo ``w_t`` se ajustan para limpiar el mercado, esto es:
+
+```math
+\begin{equation}
+  K_t + B_t = A \quad \text{y} \quad L_t = L_t^s
+\end{equation}
+```
+
+Nótese que hay dos sectores que demandan ahorro de los hogares. El sector de empresas emplea ahorro como capital en el proceso de producción, mientras que el gobierno lo usa como deuda pública con el objetivo de financiar su gasto. El gobierno y las empresas compiten en competencia perfecta en el mercado de capital.
+
+Con respecto al mercado de bienes, todos los productos producidos deben ser utilizados ya sea como consumo por parte del sector privado o por el gobierno, o en forma de inversión en el futuro stock de capital. Así, el equilibrio en el mercado de bienes está dado por
+
+```math
+\begin{equation}
+  Y_t = C_t + G_t + I_t
 \end{equation}
 ```
