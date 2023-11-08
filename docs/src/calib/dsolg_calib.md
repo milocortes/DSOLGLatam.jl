@@ -64,3 +64,7 @@ Para las ejecuciones del modelo se definió el esquema 3, es decir, de forma ex�
 Con respecto al sistema de pensiones, tenemos que definir la tasa de reemplazo ``\kappa``. El valor observado de la tasa de reemplazo para los tres países fue obtenido de [OECD-Founded Pension Indicators-Contributions](https://stats.oecd.org/Index.aspx?DataSetCode=PNNI_NEW).
 
 El valor del factor de descuento intertemporal ``\beta`` fue el mismo que el usado por los autores.
+
+
+## Evaluación de la calibración
+![Tabla de parámetros calibrados](tabla_calibrados.png)
