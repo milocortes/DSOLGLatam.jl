@@ -2,7 +2,7 @@
 
 La siguiente tabla presenta los parámetros del modelo. Se clasifican de acuerdo a parámetros que son obtenidos directamente de los datos (parámetro exógenos) y aquellos que son calibrados. Se describe de forma breve el proceso de calibración. Para más detalle, véase la sección de [Parametrización y calibración del modelo](https://milocortes.github.io/DSOLGLatam.jl/dev/calib/dsolg_calib/).
 
-Se muestra también las salidas del modelo se son definidas como targets de calibración. Para el caso de estos targets así como de los parámetros exógenos, se señala la fuente de consulta de datos que se utilizó en el presente análisis.
+Se muestra también las salidas del modelo que son definidas como targets de calibración. Para el caso de estos targets así como de los parámetros exógenos, se señala la fuente de consulta de datos que se utilizó en el presente análisis.
 
 |    | Parámetro           | Descripción                                                                                                                         | Parámetro exógeno   | Parámetro Calibrado   | Target Calibración   | Fuente                                                                                                                                                                                                                    |
 |---:|:--------------------|:------------------------------------------------------------------------------------------------------------------------------------|:--------------------|:----------------------|:---------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

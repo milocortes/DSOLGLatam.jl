@@ -1,8 +1,8 @@
 # [Modelo](@id dsolg)
  
-El siguiente modelo corresponde al capítulo 11 del libro de [Fehr y Kindermann (2018)](https://global.oup.com/academic/product/introduction-to-computational-economics-using-fortran-9780198804390?q=Economics%20Using%20Fortran&lang=en&cc=mx).
+Modelo de Generaciones Traslapadas Dinámico y Estocástico realizado para el BID bajo el proyecto “A general equilibrium model for a new social contract: health, pensions, and care”
 
-Dicho modelo incorpora a riesgos idiosincráticos en la productividad laboral y decisión endógena de la oferta de laboral de los hogares. El precio de los factores responde a cambios en el comportamiento individual y el gobierno entra como un agente que recolecta ingresos por impuestos para financiar su gasto.
+Este modelo incorpora a riesgos idiosincráticos en la productividad laboral y decisión endógena de la oferta de laboral de los hogares. El precio de los factores responde a cambios en el comportamiento individual y el gobierno entra como un agente que recolecta ingresos por impuestos para financiar su gasto. El modelo se basa en el modelo presentado por [Fehr y Kindermann (2018)](https://global.oup.com/academic/product/introduction-to-computational-economics-using-fortran-9780198804390?q=Economics%20Using%20Fortran&lang=en&cc=mx).
 
 ## Demografía
 En cada periodo ``t``, la economía está poblada por ``J`` generaciones traslapadas indizadas por ``j = 1, \dots, J``. Se asume que la supervivencia de un periodo al siguiente es estocástica y que ``\psi_j`` es la probabilidad que un agente sobreviva de la edad ``j-1`` a la edad ``j``, condicional a que vive en la edad ``j-1``. La probabilidad incondicional de sobrevivir a la edad ``j`` está dada por ``\Pi_{i=1}^j \psi_i`` con ``\psi_1=1``. Dado que el número de miembros de cada cohorte declina con respecto a la edad, el tamaño del cohorte correspondiente a la edad ``j`` en el periodo ``t`` es
